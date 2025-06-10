@@ -52,6 +52,26 @@ func main() {
 
 	ExibeError(problema)
 	ExibeError(errors.New("Teste"))
+
+	// interface vazia pode armazenar qualquer tipo
+	var a interface{}
+	a = 5
+	fmt.Println(a)
+
+	var lista []interface{}
+	lista = append(lista, 10)
+	lista = append(lista, 7.5)
+	lista = append(lista, true)
+	lista = append(lista, "teste")
+
+	for _, valor := range lista {
+		if v, ok := valor.(string); ok {
+			fmt.Println(v + " string")
+		} else {
+			fmt.Println(valor)
+		}
+	}
+
 }
 
 // essa struct implementa a inferface error
