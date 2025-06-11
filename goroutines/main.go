@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 )
 
 func main() {
@@ -41,11 +42,16 @@ func main() {
 	// time.Sleep(time.Second * 5)
 	// fmt.Println(i)
 
-	channel := make(chan int)
+	// channel normal
+	// channel := make(chan int)
+
+	// channel inicializado com buffer de 100
+	channel := make(chan int, 100)
 	go setList(channel)
 
 	for v := range channel {
-		fmt.Println(v)
+		fmt.Println("recenbendo: ", v)
+		time.Sleep(time.Second)
 	}
 }
 
@@ -78,9 +84,10 @@ func main() {
 // 	*i = newNumber
 // }
 
-func setList(channel chan int) {
+func setList(channel chan<- int) {
 	for i := 0; i < 100; i++ {
 		channel <- i
+		fmt.Println("enviando: ", i)
 	}
 	close(channel)
 }
