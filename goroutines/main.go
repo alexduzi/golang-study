@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"sync"
-	"time"
 )
 
 func main() {
@@ -30,18 +28,25 @@ func main() {
 	// time.Sleep(time.Second * 2)
 	// fmt.Println(i)
 
-	var m sync.Mutex
-	i := 0
-	for x := 0; x < 10000; x++ {
-		go func() {
-			m.Lock()
-			i++
-			m.Unlock()
-		}()
-	}
+	// var m sync.Mutex
+	// i := 0
+	// for x := 0; x < 10000; x++ {
+	// 	go func() {
+	// 		m.Lock()
+	// 		i++
+	// 		m.Unlock()
+	// 	}()
+	// }
 
-	time.Sleep(time.Second * 5)
-	fmt.Println(i)
+	// time.Sleep(time.Second * 5)
+	// fmt.Println(i)
+
+	channel := make(chan int)
+	go setList(channel)
+
+	for v := range channel {
+		fmt.Println(v)
+	}
 }
 
 // func showMessage(message string) {
@@ -69,6 +74,13 @@ func main() {
 // 	wg.Done()
 // }
 
-func ChangeNumber(i *int, newNumber int) {
-	*i = newNumber
+// func ChangeNumber(i *int, newNumber int) {
+// 	*i = newNumber
+// }
+
+func setList(channel chan int) {
+	for i := 0; i < 100; i++ {
+		channel <- i
+	}
+	close(channel)
 }
