@@ -31,8 +31,8 @@ func deferExample() {
 func panicExample() {
 	// função anonima
 	defer func() {
-		if r := recover(); r != nil {
-			fmt.Println("Recover")
+		if err := recover(); err != nil {
+			fmt.Println("Recover: ", err)
 		}
 	}()
 
