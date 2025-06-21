@@ -1,44 +1,44 @@
 package main
 
-import (
-	"fmt"
-	"os"
+// import (
+// 	"fmt"
+// 	"os"
 
-	"github.com/fatih/color"
-)
+// 	"github.com/fatih/color"
+// )
 
-func main() {
-	color.Blue("Inicializando...")
+// func main() {
+// 	color.Blue("Inicializando...")
 
-	panicExample()
-	// deferExample()
+// 	panicExample()
+// 	// deferExample()
 
-	fmt.Println("Fim")
-}
+// 	fmt.Println("Fim")
+// }
 
-func deferExample() {
-	file, err := os.Create("./settings.txt")
+// func deferExample() {
+// 	file, err := os.Create("./settings.txt")
 
-	if err != nil {
-		panic(err)
-	}
+// 	if err != nil {
+// 		panic(err)
+// 	}
 
-	defer file.Close()
+// 	defer file.Close()
 
-	file.Write([]byte("teste"))
-}
+// 	file.Write([]byte("teste"))
+// }
 
-func panicExample() {
-	// função anonima
-	defer func() {
-		if err := recover(); err != nil {
-			fmt.Println("Recover: ", err)
-		}
-	}()
+// func panicExample() {
+// 	// função anonima
+// 	defer func() {
+// 		if err := recover(); err != nil {
+// 			fmt.Println("Recover: ", err)
+// 		}
+// 	}()
 
-	_, err := os.Open("./panic.txt")
+// 	_, err := os.Open("./panic.txt")
 
-	if err != nil {
-		panic(err)
-	}
-}
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// }
