@@ -1,8 +1,10 @@
 package main
 
+// quando trabalhar apenas com texto utilizar text/template
+
 import (
-	"html/template"
 	"os"
+	"text/template"
 )
 
 type Curso struct {
