@@ -1,13 +1,14 @@
 package main
 
 import (
-	"github.com/google/uuid"
+	"fmt"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 type Product struct {
-	ID    string `gorm:primaryKey`
+	ID    uint `gorm:"primaryKey"`
 	Name  string
 	Price float64
 }
@@ -22,18 +23,32 @@ func main() {
 	// cria tabela se baseando na struct
 	db.AutoMigrate(&Product{})
 
-	// inserindo
-	db.Create(&Product{
-		ID:    uuid.New().String(),
-		Name:  "Playstation 5",
-		Price: 699.00,
-	})
+	// // inserindo
+	// db.Create(&Product{
+	// 	Name:  "Playstation 5",
+	// 	Price: 699.00,
+	// })
 
-	// inserindo em batch
-	products := []Product{
-		{ID: uuid.NewString(), Name: "Notebook", Price: 5000.00},
-		{ID: uuid.NewString(), Name: "Smartphone", Price: 2000.00},
-		{ID: uuid.NewString(), Name: "Aoc Monitor 27pol", Price: 1000.00},
-	}
-	db.Create(&products)
+	// // inserindo em batch
+	// products := []Product{
+	// 	{Name: "Notebook", Price: 5000.00},
+	// 	{Name: "Smartphone", Price: 2000.00},
+	// 	{Name: "Aoc Monitor 27pol", Price: 1000.00},
+	// }
+	// db.Create(&products)
+
+	// retornando primeiro produto
+	var product Product
+	db.First(&product)
+	fmt.Printf("%+v \n", product)
+
+	// retornando o produto de id 2
+	var product2 Product
+	db.First(&product2, 2)
+	fmt.Printf("%+v \n", product2)
+
+	// retornando primeiro produto com cláusula where
+	var smartphone Product
+	db.First(&smartphone, "name = ?", "Smartphone")
+	fmt.Printf("%+v \n", smartphone)
 }
