@@ -14,11 +14,18 @@ type Category struct {
 
 type Product struct {
 	gorm.Model
-	ID         uint `gorm:"primaryKey"`
-	Name       string
-	Price      float64
-	CategoryID int
-	Category   Category
+	ID           uint `gorm:"primaryKey"`
+	Name         string
+	Price        float64
+	CategoryID   int
+	Category     Category
+	SerialNumber SerialNumber
+}
+
+type SerialNumber struct {
+	ID        int `gorm:"primaryKey"`
+	Number    string
+	ProductID int
 }
 
 func main() {
@@ -30,27 +37,32 @@ func main() {
 		panic(err)
 	}
 
-	// // cria tabela se baseando na struct
-	// db.AutoMigrate(&Product{}, &Category{})
+	// cria tabela se baseando na struct
+	db.AutoMigrate(&Product{}, &Category{}, &SerialNumber{})
 
-	// // create cateogry
-	// category := Category{Name: "Eletronics"}
-	// db.Create(&category)
+	// create cateogry
+	category := Category{Name: "Eletronics"}
+	db.Create(&category)
 
-	// // create product
-	// product := Product{
-	// 	Name:       "Notebook",
-	// 	Price:      1000.00,
-	// 	CategoryID: category.ID,
-	// }
-	// db.Create(&product)
+	// create product
+	product := Product{
+		Name:       "Notebook",
+		Price:      1000.00,
+		CategoryID: category.ID,
+	}
+	db.Create(&product)
+
+	serialNumber := SerialNumber{Number: "123456", ProductID: 1}
+	db.Create(&serialNumber)
 
 	// carregando as categorias com Preload
 	var products []Product
-	db.Preload("Category").Find(&products)
+	db.Preload("Category").Preload("SerialNumber").Find(&products)
 	for _, prod := range products {
 		fmt.Printf("%+v \n", prod)
 		fmt.Println()
 		fmt.Printf("%+v \n", prod.Category)
+		fmt.Println()
+		fmt.Printf("%+v \n", prod.SerialNumber)
 	}
 }
