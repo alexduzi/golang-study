@@ -52,10 +52,17 @@ func main() {
 	// db.First(&smartphone, "name = ?", "Smartphone")
 	// fmt.Printf("%+v \n", smartphone)
 
-	// retornando todos os produtos
-	var products []Product
-	db.Find(&products)
-	for _, prod := range products {
+	// // retornando todos os produtos
+	// var products []Product
+	// db.Find(&products)
+	// for _, prod := range products {
+	// 	fmt.Printf("%+v \n", prod)
+	// }
+
+	// retornando com paginação
+	var paginatedList []Product
+	db.Limit(2).Offset(2).Find(&paginatedList)
+	for _, prod := range paginatedList {
 		fmt.Printf("%+v \n", prod)
 	}
 }
