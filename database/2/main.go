@@ -8,6 +8,7 @@ import (
 )
 
 type Product struct {
+	gorm.Model
 	ID    uint `gorm:"primaryKey"`
 	Name  string
 	Price float64
@@ -80,11 +81,11 @@ func main() {
 	// 	fmt.Printf("%+v \n", prod)
 	// }
 
-	// atualizando o primeiro registro
-	var p Product
-	db.First(&p)
-	p.Name = "New Mouse"
-	db.Save(&p)
+	// // atualizando o primeiro registro
+	// var p Product
+	// db.First(&p)
+	// p.Name = "New Mouse"
+	// db.Save(&p)
 
 	var p2 Product
 	db.First(&p2, 1)
@@ -92,4 +93,5 @@ func main() {
 
 	// deletando registro
 	db.Delete(&p2)
+
 }
