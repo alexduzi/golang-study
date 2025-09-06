@@ -66,9 +66,16 @@ func main() {
 	// 	fmt.Printf("%+v \n", prod)
 	// }
 
-	// // retornando com where
+	// // // retornando com where
+	// var products []Product
+	// db.Where("price > ?", 1000).Find(&products)
+	// for _, prod := range products {
+	// 	fmt.Printf("%+v \n", prod)
+	// }
+
+	// // // retornando com where
 	var products []Product
-	db.Where("price > 1000").Find(&products)
+	db.Where("name like ?", "%book%").Find(&products)
 	for _, prod := range products {
 		fmt.Printf("%+v \n", prod)
 	}
