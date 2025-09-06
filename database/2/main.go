@@ -37,18 +37,25 @@ func main() {
 	// }
 	// db.Create(&products)
 
-	// retornando primeiro produto
-	var product Product
-	db.First(&product)
-	fmt.Printf("%+v \n", product)
+	// // retornando primeiro produto
+	// var product Product
+	// db.First(&product)
+	// fmt.Printf("%+v \n", product)
 
-	// retornando o produto de id 2
-	var product2 Product
-	db.First(&product2, 2)
-	fmt.Printf("%+v \n", product2)
+	// // retornando o produto de id 2
+	// var product2 Product
+	// db.First(&product2, 2)
+	// fmt.Printf("%+v \n", product2)
 
-	// retornando primeiro produto com cláusula where
-	var smartphone Product
-	db.First(&smartphone, "name = ?", "Smartphone")
-	fmt.Printf("%+v \n", smartphone)
+	// // retornando primeiro produto com cláusula where
+	// var smartphone Product
+	// db.First(&smartphone, "name = ?", "Smartphone")
+	// fmt.Printf("%+v \n", smartphone)
+
+	// retornando todos os produtos
+	var products []Product
+	db.Find(&products)
+	for _, prod := range products {
+		fmt.Printf("%+v \n", prod)
+	}
 }
