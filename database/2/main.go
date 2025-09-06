@@ -19,18 +19,16 @@ type Product struct {
 	Price        float64
 	CategoryID   int
 	Category     Category
-	SerialNumber SerialNumber
+	SerialNumber SerialNumber // has one relation
 }
 
 type SerialNumber struct {
 	ID        int `gorm:"primaryKey"`
 	Number    string
-	ProductID int
+	ProductID int // has one relation
 }
 
 func main() {
-	// SimpleGormOperations()
-
 	dsn := "root:root@tcp(localhost:3306)/goexpertgorm?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
