@@ -74,9 +74,22 @@ func main() {
 	// }
 
 	// // // retornando com where
-	var products []Product
-	db.Where("name like ?", "%book%").Find(&products)
-	for _, prod := range products {
-		fmt.Printf("%+v \n", prod)
-	}
+	// var products []Product
+	// db.Where("name like ?", "%book%").Find(&products)
+	// for _, prod := range products {
+	// 	fmt.Printf("%+v \n", prod)
+	// }
+
+	// atualizando o primeiro registro
+	var p Product
+	db.First(&p)
+	p.Name = "New Mouse"
+	db.Save(&p)
+
+	var p2 Product
+	db.First(&p2, 1)
+	fmt.Println(p2.Name)
+
+	// deletando registro
+	db.Delete(&p2)
 }
