@@ -30,17 +30,30 @@ func main() {
 	defer db.Close()
 
 	product := NewProduct("New product", 1899.90)
+	fmt.Printf("Inserindo o produto %s\n", product.ID)
 	err = insertProduct(db, product)
 	if err != nil {
 		panic(err)
 	}
 	product.Price = 100.00
+	fmt.Printf("Atualizando o produto %s para valor de %.2f\n", product.ID, product.Price)
 	err = updateProduct(db, product)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println("mysql connected")
+	fmt.Printf("Selecionando o produto %s\n", product.ID)
+	p, err := selectProduct(db, product.ID)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Product: %v, possui o preço de %.2f\n", p.Name, p.Price)
+
+	fmt.Println("Selecionando todos os produtos")
+	products, err := selectAllProducts(db)
+	for _, p := range products {
+		fmt.Printf("Product: %v, possui o preço de %.2f\n", p.Name, p.Price)
+	}
 }
 
 func insertProduct(db *sql.DB, product *Product) error {
@@ -69,4 +82,41 @@ func updateProduct(db *sql.DB, product *Product) error {
 		return err
 	}
 	return nil
+}
+
+func selectProduct(db *sql.DB, id string) (*Product, error) {
+	stmt, err := db.Prepare("select id, name, price from products where id = ?")
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	var p Product
+	err = stmt.QueryRow(id).Scan(&p.ID, &p.Name, &p.Price)
+	if err != nil {
+		return nil, err
+	}
+
+	return &p, nil
+}
+
+func selectAllProducts(db *sql.DB) ([]Product, error) {
+	rows, err := db.Query("select id, name, price from products")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var products []Product
+
+	for rows.Next() {
+		var p Product
+		err = rows.Scan(&p.ID, &p.Name, &p.Price)
+		if err != nil {
+			return nil, err
+		}
+		products = append(products, p)
+	}
+
+	return products, nil
 }
