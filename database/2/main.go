@@ -59,10 +59,17 @@ func main() {
 	// 	fmt.Printf("%+v \n", prod)
 	// }
 
-	// retornando com paginação
-	var paginatedList []Product
-	db.Limit(2).Offset(2).Find(&paginatedList)
-	for _, prod := range paginatedList {
+	// // retornando com paginação
+	// var paginatedList []Product
+	// db.Limit(2).Offset(2).Find(&paginatedList)
+	// for _, prod := range paginatedList {
+	// 	fmt.Printf("%+v \n", prod)
+	// }
+
+	// // retornando com where
+	var products []Product
+	db.Where("price > 1000").Find(&products)
+	for _, prod := range products {
 		fmt.Printf("%+v \n", prod)
 	}
 }
