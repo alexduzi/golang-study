@@ -93,5 +93,29 @@ func TestFindAllProducts(t *testing.T) {
 	assert.Equal(t, "ProductTest23", products[2].Name)
 
 	// clean
-	db.Delete(&entity.Product{})
+	db.Where("price > 0").Delete(&entity.Product{})
+}
+
+func TestUpdateProduct(t *testing.T) {
+	db, err := gorm.Open(sqlite.Open("file:memory:"), &gorm.Config{})
+	if err != nil {
+		t.Error(err)
+	}
+
+	db.AutoMigrate(&entity.Product{})
+
+	product, err := entity.NewProduct("ProductTest", rand.Float64()*100)
+	assert.NoError(t, err)
+	productDB := NewProduct(db)
+	productDB.Create(product)
+
+	product.Name = "ProductTestUpdate"
+	productDB.Update(product)
+
+	productUpdated, err := productDB.FindByID(product.ID.String())
+	assert.NoError(t, err)
+	assert.Equal(t, "ProductTestUpdate", productUpdated.Name)
+
+	// clean
+	db.Where("name = ?", "ProductTestUpdate").Delete(&entity.Product{})
 }
