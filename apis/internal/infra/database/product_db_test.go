@@ -91,4 +91,7 @@ func TestFindAllProducts(t *testing.T) {
 	assert.Len(t, products, 3)
 	assert.Equal(t, "ProductTest21", products[0].Name)
 	assert.Equal(t, "ProductTest23", products[2].Name)
+
+	// clean
+	db.Delete(&entity.Product{})
 }
