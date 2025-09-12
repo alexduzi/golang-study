@@ -49,5 +49,5 @@ func (p *Product) Update(product *entity.Product) error {
 }
 
 func (p *Product) Delete(id string) error {
-	return p.DB.Where("id = ?", id).Delete(&entity.User{}).Error
+	return p.DB.Where("id = ?", id).Delete(&entity.Product{}).Error
 }

@@ -12,7 +12,7 @@ import (
 )
 
 func TestCreateNewProduct(t *testing.T) {
-	db, err := gorm.Open(sqlite.Open("file:memory:"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("file::memory:"), &gorm.Config{})
 	if err != nil {
 		t.Error(err)
 	}
@@ -33,11 +33,11 @@ func TestCreateNewProduct(t *testing.T) {
 	assert.Equal(t, product.Name, productFound.Name)
 	assert.Equal(t, product.Price, productFound.Price)
 
-	db.Where("name = ?", "ProductTest").Delete(&entity.Product{})
+	db.Where("price > 0").Delete(&entity.Product{})
 }
 
 func TestFindProductByID(t *testing.T) {
-	db, err := gorm.Open(sqlite.Open("file:memory:"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("file::memory:"), &gorm.Config{})
 	if err != nil {
 		t.Error(err)
 	}
@@ -56,11 +56,11 @@ func TestFindProductByID(t *testing.T) {
 	assert.Equal(t, product.Name, productFound.Name)
 	assert.Equal(t, product.Price, productFound.Price)
 
-	db.Where("name = ?", "ProductTest").Delete(&entity.Product{})
+	db.Where("price > 0").Delete(&entity.Product{})
 }
 
 func TestFindAllProducts(t *testing.T) {
-	db, err := gorm.Open(sqlite.Open("file:memory:"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("file::memory:"), &gorm.Config{})
 	if err != nil {
 		t.Error(err)
 	}
@@ -97,7 +97,7 @@ func TestFindAllProducts(t *testing.T) {
 }
 
 func TestUpdateProduct(t *testing.T) {
-	db, err := gorm.Open(sqlite.Open("file:memory:"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("file::memory:"), &gorm.Config{})
 	if err != nil {
 		t.Error(err)
 	}
@@ -117,5 +117,28 @@ func TestUpdateProduct(t *testing.T) {
 	assert.Equal(t, "ProductTestUpdate", productUpdated.Name)
 
 	// clean
-	db.Where("name = ?", "ProductTestUpdate").Delete(&entity.Product{})
+	db.Where("price > 0").Delete(&entity.Product{})
+}
+
+func TestDeleteProduct(t *testing.T) {
+	db, err := gorm.Open(sqlite.Open("file::memory:"), &gorm.Config{})
+	if err != nil {
+		t.Error(err)
+	}
+
+	db.AutoMigrate(&entity.Product{})
+
+	product, err := entity.NewProduct("ProductTestDelete", rand.Float64()*100)
+	assert.NoError(t, err)
+	productDB := NewProduct(db)
+	productDB.Create(product)
+
+	err = productDB.Delete(product.ID.String())
+	assert.NoError(t, err)
+
+	_, err = productDB.FindByID(product.ID.String())
+	assert.Error(t, err)
+	// assert.Nil(t, productDeleted)
+
+	db.Where("price > 0").Delete(&entity.Product{})
 }
