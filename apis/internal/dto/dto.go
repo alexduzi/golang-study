@@ -19,3 +19,7 @@ type GetJwtInput struct {
 type GetJwtOutput struct {
 	AccessToken string `json:"access_token"`
 }
+
+type ErrorResponse struct {
+	Message string `json:"message"`
+}

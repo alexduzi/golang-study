@@ -11,10 +11,6 @@ import (
 	"github.com/go-chi/jwtauth"
 )
 
-type Error struct {
-	Message string `json:"message"`
-}
-
 type UserHandler struct {
 	UserDB       database.UserInterface
 	Jwt          *jwtauth.JWTAuth
@@ -37,15 +33,15 @@ func NewUserHandler(userDB database.UserInterface, jwt *jwtauth.JWTAuth, jwtExpi
 // @Produce           json
 // @Param             request      body     dto.GetJwtInput    true    "user credentials"
 // @Success           201          {object} dto.GetJwtOutput
-// @Failure           404          {object} Error
-// @Failure           500          {object} Error
+// @Failure           404          {object} dto.ErrorResponse
+// @Failure           500          {object} dto.ErrorResponse
 // @Router            /users/token [post]
 func (h *UserHandler) GetJwt(w http.ResponseWriter, r *http.Request) {
 	var jwtInput dto.GetJwtInput
 	err := json.NewDecoder(r.Body).Decode(&jwtInput)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		err := Error{Message: err.Error()}
+		err := dto.ErrorResponse{Message: err.Error()}
 		json.NewEncoder(w).Encode(err)
 		return
 	}
@@ -53,7 +49,7 @@ func (h *UserHandler) GetJwt(w http.ResponseWriter, r *http.Request) {
 	user, err := h.UserDB.FindByEmail(jwtInput.Email)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
-		err := Error{Message: err.Error()}
+		err := dto.ErrorResponse{Message: err.Error()}
 		json.NewEncoder(w).Encode(err)
 		return
 	}
@@ -83,7 +79,7 @@ func (h *UserHandler) GetJwt(w http.ResponseWriter, r *http.Request) {
 // @Produce           json
 // @Param             request     body     dto.CreateUserInput   true    "user request"
 // @Success           201
-// @Failure           500         {object} Error
+// @Failure           500         {object} dto.ErrorResponse
 // @Router            /users [post]
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var user dto.CreateUserInput
