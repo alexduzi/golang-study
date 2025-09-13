@@ -1,0 +1,42 @@
+POST http://localhost:8000/users HTTP/1.1
+Content-Type: "application/json"
+
+{
+    "name": "New User",
+    "email": "emailuser1@gmail.com",
+    "password": "1245655"
+}
+
+###
+
+GET http://localhost:8000/users/457e2a30-592e-47a3-9db3-1e4345cfa832 HTTP/1.1
+Content-Type: "application/json"
+
+###
+
+GET http://localhost:8000/users HTTP/1.1
+Content-Type: "application/json"
+
+###
+
+PUT http://localhost:8000/users/457e2a30-592e-47a3-9db3-1e4345cfa832a HTTP/1.1
+Content-Type: "application/json"
+
+{
+    "name": "Product test updated 4",
+    "price": 160.00
+}
+
+###
+
+DELETE http://localhost:8000/users/62c195ae-dc1b-47a3-b1ad-01d880ede8f9 HTTP/1.1
+Content-Type: "application/json"
+
+###
+POST http://localhost:8000/users/token HTTP/1.1
+Content-Type: "application/json"
+
+{
+    "email": "emailuser1@gmail.com",
+    "password": "1245655"
+}

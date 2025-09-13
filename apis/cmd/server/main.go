@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	_, err := configs.LoadConfig(".")
+	configs, err := configs.LoadConfig(".")
 	if err != nil {
 		panic(err)
 	}
@@ -28,8 +28,10 @@ func main() {
 	db.AutoMigrate(&entity.Product{}, &entity.User{})
 
 	productDB := database.NewProduct(db)
-
 	productHandler := handlers.NewProductHandler(productDB)
+
+	userDB := database.NewUser(db)
+	userHandler := handlers.NewUserHandler(userDB, configs.TokenAuth, configs.JwtExpiresIn)
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
@@ -39,6 +41,9 @@ func main() {
 	r.Get("/products", productHandler.GetProducts)
 	r.Put("/products/{id}", productHandler.UpdateProduct)
 	r.Delete("/products/{id}", productHandler.DeleteProduct)
+
+	r.Post("/users", userHandler.CreateUser)
+	r.Post("/users/token", userHandler.GetJwt)
 
 	http.ListenAndServe(":8000", r)
 }
