@@ -1,14 +1,15 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/alexduzi/golang-study/apis/configs"
 	"github.com/alexduzi/golang-study/apis/internal/entity"
 	"github.com/alexduzi/golang-study/apis/internal/infra/database"
 	"github.com/alexduzi/golang-study/apis/internal/webserver/handlers"
+	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/jwtauth"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -36,6 +37,8 @@ func main() {
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+	// r.Use(LogRequest)
 
 	r.Route("/products", func(r chi.Router) {
 		r.Use(jwtauth.Verifier(configs.TokenAuth))
@@ -51,4 +54,12 @@ func main() {
 	r.Post("/users/token", userHandler.GetJwt)
 
 	http.ListenAndServe(":8000", r)
+}
+
+// custom middleware
+func LogRequest(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("Request: %s %s", r.Method, r.URL.Path)
+		next.ServeHTTP(w, r)
+	})
 }
