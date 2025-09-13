@@ -37,3 +37,5 @@ go.work.sum
 cidade.txt
 
 memory:
+
+*.db
