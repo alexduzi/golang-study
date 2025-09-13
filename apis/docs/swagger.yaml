@@ -33,6 +33,17 @@ definitions:
       access_token:
         type: string
     type: object
+  entity.Product:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    type: object
 host: localhost:8000
 info:
   contact:
@@ -48,6 +59,45 @@ info:
   version: "1.0"
 paths:
   /products:
+    get:
+      consumes:
+      - application/json
+      description: List all products paged
+      parameters:
+      - description: page number
+        in: query
+        name: page
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        type: string
+      - description: sort (asc, desc)
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Product'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: List all products paged
+      tags:
+      - products
     post:
       consumes:
       - application/json
