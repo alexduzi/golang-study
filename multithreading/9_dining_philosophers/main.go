@@ -18,7 +18,7 @@ type Philosopher struct {
 }
 
 func (p *Philosopher) Thinking() {
-	fmt.Printf("%s está pensando\n", p.name)
+	fmt.Printf("%s is thinking\n", p.name)
 	time.Sleep(time.Millisecond * 500)
 }
 
@@ -28,32 +28,32 @@ func (p *Philosopher) Eating(wg *sync.WaitGroup) {
 	for p.mealsEaten < MEAL {
 		p.Thinking()
 
-		// Esta é a parte que causa DEADLOCK!
-		// Todos os filósofos tentam pegar o garfo da esquerda primeiro
-		fmt.Printf("%s está tentando pegar o garfo da ESQUERDA (posição %d)\n", p.name, p.tablePosition)
+		// This is the part that causes DEADLOCK!
+		// All philosophers try to grab the left fork first
+		fmt.Printf("%s is trying to grab the LEFT fork (position %d)\n", p.name, p.tablePosition)
 		p.leftFork.Lock()
-		fmt.Printf("%s PEGOU o garfo da esquerda\n", p.name)
+		fmt.Printf("%s GRABBED the left fork\n", p.name)
 
-		// Pequeno delay para aumentar a chance de deadlock
+		// Small delay to increase the chance of deadlock
 		time.Sleep(time.Millisecond * 100)
 
-		fmt.Printf("%s está tentando pegar o garfo da DIREITA (posição %d)\n", p.name, (p.tablePosition+1)%PHILOSOPHERS_SIZE)
+		fmt.Printf("%s is trying to grab the RIGHT fork (position %d)\n", p.name, (p.tablePosition+1)%PHILOSOPHERS_SIZE)
 		p.rightFork.Lock()
-		fmt.Printf("%s PEGOU o garfo da direita\n", p.name)
+		fmt.Printf("%s GRABBED the right fork\n", p.name)
 
-		// Comendo
+		// Eating
 		p.mealsEaten++
-		fmt.Printf("%s está COMENDO! (refeição %d/%d)\n", p.name, p.mealsEaten, MEAL)
+		fmt.Printf("%s is EATING! (meal %d/%d)\n", p.name, p.mealsEaten, MEAL)
 		time.Sleep(time.Millisecond * 500)
 
-		// Soltando os garfos
+		// Releasing the forks
 		p.rightFork.Unlock()
-		fmt.Printf("%s soltou o garfo da direita\n", p.name)
+		fmt.Printf("%s released the right fork\n", p.name)
 
 		p.leftFork.Unlock()
-		fmt.Printf("%s soltou o garfo da esquerda\n", p.name)
+		fmt.Printf("%s released the left fork\n", p.name)
 
-		fmt.Printf("%s terminou a refeição %d/%d\n\n", p.name, p.mealsEaten, MEAL)
+		fmt.Printf("%s finished meal %d/%d\n\n", p.name, p.mealsEaten, MEAL)
 	}
 }
 
@@ -68,7 +68,7 @@ func NewPhilosopher(name string, tablePosition int, leftFork, rightFork *sync.Mu
 }
 
 func CreatePhilosophers() []*Philosopher {
-	// Criar os garfos (mutexes) - um entre cada par de filósofos
+	// Create the forks (mutexes) - one between each pair of philosophers
 	forks := make([]*sync.Mutex, PHILOSOPHERS_SIZE)
 	for i := 0; i < PHILOSOPHERS_SIZE; i++ {
 		forks[i] = &sync.Mutex{}
@@ -76,8 +76,8 @@ func CreatePhilosophers() []*Philosopher {
 
 	philosophers := []*Philosopher{}
 
-	// Disposição circular: cada filósofo tem um garfo à esquerda e outro à direita
-	// TODOS pegam o garfo da esquerda primeiro - isso CAUSA DEADLOCK!
+	// Circular arrangement: each philosopher has a fork on the left and another on the right
+	// ALL grab the left fork first - this CAUSES DEADLOCK!
 	philosophers = append(philosophers, NewPhilosopher("Aristotle", 0, forks[0], forks[1]))
 	philosophers = append(philosophers, NewPhilosopher("Socrates", 1, forks[1], forks[2]))
 	philosophers = append(philosophers, NewPhilosopher("Plato", 2, forks[2], forks[3]))
@@ -88,15 +88,13 @@ func CreatePhilosophers() []*Philosopher {
 }
 
 func main() {
-	fmt.Println("═══════════════════════════════════════════════════════")
-	fmt.Println("   DEMONSTRAÇÃO DO PROBLEMA DOS FILÓSOFOS JANTANDO")
-	fmt.Println("   (Dining Philosophers Problem - Dijkstra)")
-	fmt.Println("═══════════════════════════════════════════════════════")
+	fmt.Println("   DINING PHILOSOPHERS PROBLEM DEMONSTRATION")
+	fmt.Println("   (Dijkstra's Classic Concurrency Problem)")
 
 	wg := sync.WaitGroup{}
 	philosophers := CreatePhilosophers()
 
-	fmt.Println("Os filósofos estão sentados à mesa...")
+	fmt.Println("The philosophers are sitting at the table...")
 	time.Sleep(time.Second)
 
 	wg.Add(PHILOSOPHERS_SIZE)
@@ -104,7 +102,7 @@ func main() {
 		go philosopher.Eating(&wg)
 	}
 
-	// Timeout para detectar deadlock
+	// Timeout to detect deadlock
 	done := make(chan bool)
 	go func() {
 		wg.Wait()
@@ -113,13 +111,9 @@ func main() {
 
 	select {
 	case <-done:
-		fmt.Println("═══════════════════════════════════════════════════════")
-		fmt.Println("Todos os filósofos comeram todas as refeições!")
-		fmt.Println("═══════════════════════════════════════════════════════")
+		fmt.Println("All philosophers finished all their meals!")
 	case <-time.After(10 * time.Second):
-		fmt.Println("═══════════════════════════════════════════════════════")
-		fmt.Println("DEADLOCK DETECTADO!")
-		fmt.Println("Os filósofos ficaram travados esperando pelos garfos.")
-		fmt.Println("═══════════════════════════════════════════════════════")
+		fmt.Println("DEADLOCK DETECTED!")
+		fmt.Println("The philosophers are stuck waiting for the forks.")
 	}
 }
