@@ -18,7 +18,7 @@ func main() {
 
 	defer close(ch)
 	defer close(exit)
-
+	
 	for {
 		select {
 		case value := <-ch:
