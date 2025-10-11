@@ -1,0 +1,26 @@
+goos: linux
+goarch: amd64
+pkg: github.com/alexduzi/golang-study/profiling
+cpu: Intel(R) Core(TM) 7 240H
+BenchmarkHeavyComputation-16            	      19	  62453326 ns/op
+BenchmarkHeavyComputation-16            	      19	  61059571 ns/op
+BenchmarkHeavyComputation-16            	      19	  61103693 ns/op
+BenchmarkHeavyComputation-16            	      18	  60062243 ns/op
+BenchmarkHeavyComputation-16            	      19	  60951300 ns/op
+BenchmarkHeavyComputation-16            	      19	  59574894 ns/op
+BenchmarkHeavyComputation-16            	      19	  59881353 ns/op
+BenchmarkHeavyComputation-16            	      19	  60533758 ns/op
+BenchmarkHeavyComputation-16            	      19	  60500614 ns/op
+BenchmarkHeavyComputation-16            	      19	  60242181 ns/op
+BenchmarkMemoryIntensiveOperation-16    	     190	   6319204 ns/op
+BenchmarkMemoryIntensiveOperation-16    	     196	   6244523 ns/op
+BenchmarkMemoryIntensiveOperation-16    	     193	   6168368 ns/op
+BenchmarkMemoryIntensiveOperation-16    	     190	   6216414 ns/op
+BenchmarkMemoryIntensiveOperation-16    	     189	   6164432 ns/op
+BenchmarkMemoryIntensiveOperation-16    	     193	   6366562 ns/op
+BenchmarkMemoryIntensiveOperation-16    	     195	   6140055 ns/op
+BenchmarkMemoryIntensiveOperation-16    	     190	   6189753 ns/op
+BenchmarkMemoryIntensiveOperation-16    	     194	   6293311 ns/op
+BenchmarkMemoryIntensiveOperation-16    	     189	   6173741 ns/op
+PASS
+ok  	github.com/alexduzi/golang-study/profiling	31.271s
