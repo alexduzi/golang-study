@@ -28,3 +28,25 @@ func (c *Category) Create(name, description string) (Category, error) {
 
 	return Category{ID: id, Name: name, Description: description}, nil
 }
+
+func (c *Category) FindAll() ([]Category, error) {
+	rows, err := c.db.Query("SELECT id, name, description FROM categories")
+	if err != nil {
+		return []Category{}, err
+	}
+	defer rows.Close()
+
+	categories := make([]Category, 0)
+
+	for rows.Next() {
+		var id, name, description string
+		rows.Scan(&id, &name, &description)
+		categories = append(categories, Category{
+			ID:          id,
+			Name:        name,
+			Description: description,
+		})
+	}
+
+	return categories, nil
+}
