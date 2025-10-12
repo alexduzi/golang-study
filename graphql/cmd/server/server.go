@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 	"os"
@@ -11,6 +12,8 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/alexduzi/golang-study/graphql/graph"
+	"github.com/alexduzi/golang-study/graphql/internal/database"
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/vektah/gqlparser/v2/ast"
 )
 
@@ -22,7 +25,15 @@ func main() {
 		port = defaultPort
 	}
 
-	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
+	db, err := sql.Open("sqlite3", "./data.db")
+	if err != nil {
+		log.Fatal("failed to open db connection", err)
+	}
+	defer db.Close()
+
+	categoryDb := database.NewCategory(db)
+
+	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{CategoryDB: categoryDb}}))
 
 	srv.AddTransport(transport.Options{})
 	srv.AddTransport(transport.GET{})
