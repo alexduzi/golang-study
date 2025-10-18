@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	db, err := sql.Open("sqlite3", "./db.sqlite")
+	db, err := sql.Open("sqlite3", "./data.db")
 	if err != nil {
 		panic(err)
 	}
@@ -31,7 +31,8 @@ func main() {
 	s := grpc.NewServer()
 	pb.RegisterCategoryServiceServer(s, categoryService)
 
-	reflection.Register(s)
+	// Register reflection service on gRPC server.
+	reflection.Register(s) // This is the crucial step
 
 	log.Printf("server listening at %v", lis.Addr())
 
