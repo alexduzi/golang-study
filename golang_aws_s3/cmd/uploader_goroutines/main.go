@@ -64,7 +64,7 @@ func main() {
 		uploadControl <- struct{}{} // add struct to control upload flow
 		go uploadS3Bucket(files[0].Name(), uploadControl, errorFileUpload)
 	}
-	wg.Done()
+	wg.Wait()
 }
 
 func uploadS3Bucket(fileName string, uploadControl <-chan struct{}, errorFileUpload chan<- string) {
