@@ -2,10 +2,11 @@ package main
 
 import (
 	"database/sql"
+	"log"
 	"net"
 
 	"github.com/alexduzi/golang-study/golanggrpc/internal/database"
-	"github.com/alexduzi/golang-study/golanggrpc/internal/pb"
+	pb "github.com/alexduzi/golang-study/golanggrpc/internal/pb"
 	"github.com/alexduzi/golang-study/golanggrpc/internal/service"
 	_ "github.com/mattn/go-sqlite3"
 	"google.golang.org/grpc"
@@ -19,19 +20,22 @@ func main() {
 	}
 	defer db.Close()
 
-	categoryDb := database.NewCategory(db)
-	categoryService := service.NewCategoryService(*categoryDb)
-
-	grpcServer := grpc.NewServer()
-	pb.RegisterCategoryServiceServer(grpcServer, categoryService)
-	reflection.Register(grpcServer)
-
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
 		panic(err)
 	}
 
-	if err := grpcServer.Serve(lis); err != nil {
-		panic(err)
+	categoryDb := database.NewCategory(db)
+	categoryService := service.NewCategoryService(*categoryDb)
+
+	s := grpc.NewServer()
+	pb.RegisterCategoryServiceServer(s, categoryService)
+
+	reflection.Register(s)
+
+	log.Printf("server listening at %v", lis.Addr())
+
+	if err := s.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
 	}
 }

@@ -24,13 +24,13 @@ func (c *CategoryService) CreateCategory(ctx context.Context, in *pb.CreateCateg
 		return nil, err
 	}
 
-	categoryResponse := &pb.CategoryResponse{
-		Category: &pb.Category{
-			Id:          category.ID,
-			Name:        category.Name,
-			Description: category.Description,
-		},
+	categoryPb := &pb.Category{
+		Id:          category.ID,
+		Name:        category.Name,
+		Description: category.Description,
 	}
 
-	return categoryResponse, nil
+	return &pb.CategoryResponse{
+		Category: categoryPb,
+	}, nil
 }
