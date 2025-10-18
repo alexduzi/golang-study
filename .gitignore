@@ -40,4 +40,5 @@ memory:
 
 *.db
 
+tmp/
 *.txt
