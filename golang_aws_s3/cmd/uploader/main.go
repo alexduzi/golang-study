@@ -13,9 +13,8 @@ import (
 )
 
 var (
-	s3Bucket  string = "goexpert-bucket-alexduzi"
-	objectKey string
-	s3Client  *s3.Client
+	s3Bucket string = "goexpert-bucket-alexduzi"
+	s3Client *s3.Client
 )
 
 func init() {
@@ -75,5 +74,5 @@ func uploadS3Bucket(fileName string) {
 		return
 	}
 
-	log.Printf("successfully uploaded object %s to bucket %s\n", objectKey, s3Bucket)
+	log.Printf("successfully uploaded object %s to bucket %s\n", fileName, s3Bucket)
 }
