@@ -33,6 +33,7 @@ to quickly create a Cobra application.`,
 		fmt.Println("chamado depois do run")
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
+
 		return nil
 	},
 }
