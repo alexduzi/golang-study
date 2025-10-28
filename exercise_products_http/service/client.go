@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"test/exercise_products_http/model"
@@ -33,10 +32,10 @@ func (c *ClientApiCall) GetProducts(ctx context.Context) ([]model.Product, error
 	defer resp.Body.Close()
 
 	body, _ := io.ReadAll(resp.Body)
-	fmt.Println(string(body))
+
 	var products []model.Product
 	json.Unmarshal(body, &products)
-	fmt.Println(products)
+
 	return products, nil
 }
 
@@ -51,30 +50,17 @@ func (c *ClientApiCall) GetCategoriesValue(products []model.Product) (map[string
 }
 
 func (c *ClientApiCall) GetHighestCategoryValue(categoryValue map[string]float64) model.CategoryQuanty {
-	categoriesQty := c.convertToCategoryQuanty(categoryValue)
+	maxCategory := model.CategoryQuanty{
+		Name:  "",
+		Total: -1,
+	}
 
-	maxValue := float64(0)
-	idx := 0
-
-	for i, cat := range categoriesQty {
-		if cat.Total > maxValue {
-			maxValue = cat.Total
-			idx = i
+	for key := range categoryValue {
+		if categoryValue[key] > maxCategory.Total {
+			maxCategory.Total = categoryValue[key]
+			maxCategory.Name = key
 		}
 	}
 
-	return categoriesQty[idx]
-}
-
-func (c *ClientApiCall) convertToCategoryQuanty(categoryValue map[string]float64) []model.CategoryQuanty {
-	categoriesQty := make([]model.CategoryQuanty, 0, len(categoryValue))
-
-	for key, val := range categoryValue {
-		categoriesQty = append(categoriesQty, model.CategoryQuanty{
-			Name:  key,
-			Total: val,
-		})
-	}
-
-	return categoriesQty
+	return maxCategory
 }
