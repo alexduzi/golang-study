@@ -47,17 +47,19 @@ func (s *ServiceApiCall) GetUsers(ctx context.Context) ([]model.User, error) {
 }
 
 func (s *ServiceApiCall) UsersToPostsMap(users []model.User, posts []model.Post) map[int32]model.UserHighPost {
-	mapUsers := map[int32]model.UserHighPost{}
+	// Passo 1: Crie um mapa para contar os posts de cada usuário (Complexidade O(M))
+	postCounts := make(map[int32]int)
+	for _, post := range posts {
+		postCounts[post.UserID]++
+	}
 
+	// Passo 2: Crie o mapa final usando a contagem (Complexidade O(N))
+	mapUsers := make(map[int32]model.UserHighPost)
 	for _, user := range users {
-		postsByUser := filter(posts, func(post model.Post) bool {
-			return user.Id == post.UserID
-		})
-
 		mapUsers[user.Id] = model.UserHighPost{
 			Id:    user.Id,
 			Name:  user.Name,
-			Posts: int32(len(postsByUser)),
+			Posts: int32(postCounts[user.Id]), // Acesso direto O(1)
 		}
 	}
 
