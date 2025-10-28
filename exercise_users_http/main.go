@@ -22,17 +22,24 @@ func main() {
 		panic(err)
 	}
 
-	mapUsers := serviceApiCall.UsersToMap(users)
+	mapUsers := serviceApiCall.UsersToPostsMap(users, posts)
 
-	for _, post := range posts {
-		if value, ok := mapUsers[post.UserID]; ok {
-			mapUsers[post.UserID] = value + 1
+	highestPost := mapUsers[users[0].Id].Posts
+	userName := ""
+	counterPosts := 0
+
+	for _, user := range mapUsers {
+		if highestPost < user.Posts {
+			highestPost = user.Posts
+			userName = user.Name
+		} else if highestPost == user.Posts {
+			counterPosts++
 		}
 	}
 
-	for _, user := range users {
-		if value, ok := mapUsers[user.Id]; ok {
-			fmt.Printf("user: %s \t posts quanty %d\n", user.Name, value)
-		}
+	if userName == "" && counterPosts == len(mapUsers) {
+		fmt.Printf("all the users added the same amount of posts")
+	} else {
+		fmt.Printf("the user with the highest post is: %s with %d posts", userName, highestPost)
 	}
 }

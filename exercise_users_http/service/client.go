@@ -46,11 +46,19 @@ func (s *ServiceApiCall) GetUsers(ctx context.Context) ([]model.User, error) {
 	return users, nil
 }
 
-func (s *ServiceApiCall) UsersToMap(users []model.User) map[int32]int32 {
-	mapUsers := map[int32]int32{}
+func (s *ServiceApiCall) UsersToPostsMap(users []model.User, posts []model.Post) map[int32]model.UserHighPost {
+	mapUsers := map[int32]model.UserHighPost{}
 
 	for _, user := range users {
-		mapUsers[user.Id] = 0
+		postsByUser := filter(posts, func(post model.Post) bool {
+			return user.Id == post.UserID
+		})
+
+		mapUsers[user.Id] = model.UserHighPost{
+			Id:    user.Id,
+			Name:  user.Name,
+			Posts: int32(len(postsByUser)),
+		}
 	}
 
 	return mapUsers
@@ -59,12 +67,12 @@ func (s *ServiceApiCall) UsersToMap(users []model.User) map[int32]int32 {
 func (s *ServiceApiCall) GetPosts(ctx context.Context) ([]model.Post, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", URL_POSTS, nil)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer resp.Body.Close()
 
@@ -80,4 +88,14 @@ func (s *ServiceApiCall) GetPosts(ctx context.Context) ([]model.Post, error) {
 	}
 
 	return posts, nil
+}
+
+func filter[E any](s []E, f func(E) bool) []E {
+	filtered := make([]E, 0, len(s)) // Pre-allocate with potential capacity for efficiency
+	for _, e := range s {
+		if f(e) {
+			filtered = append(filtered, e)
+		}
+	}
+	return filtered
 }
