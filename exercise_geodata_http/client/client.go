@@ -42,22 +42,14 @@ func (r *RestCountriesClient) GetCountries() ([]model.Country, error) {
 	return countries, err
 }
 
-func (r *RestCountriesClient) FilterByRegion(region string, countries []model.Country) ([]model.Country, error) {
-	countriesByRegion := []model.Country{}
+func (r *RestCountriesClient) GetTotalPopulationByRegion(region string, countries []model.Country) float64 {
+	var totalPopulation float64
 
 	for _, country := range countries {
 		if country.Subregion == region {
-			countriesByRegion = append(countriesByRegion, country)
+			totalPopulation += float64(country.Population)
 		}
 	}
 
-	return countriesByRegion, nil
-}
-
-func (r *RestCountriesClient) GetTotalPopulation(countries []model.Country) map[string]float64 {
-	totalPopulation := make(map[string]float64)
-	for _, country := range countries {
-		totalPopulation[country.Subregion] += float64(country.Population)
-	}
 	return totalPopulation
 }

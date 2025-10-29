@@ -13,12 +13,7 @@ func main() {
 		panic(err)
 	}
 
-	countriesFiltered, err := client.FilterByRegion("Western Europe", countries)
-	if err != nil {
-		panic(err)
-	}
+	totalPopulation := client.GetTotalPopulationByRegion("Western Europe", countries)
 
-	regionTotalPopulation := client.GetTotalPopulation(countriesFiltered)
-
-	fmt.Println(regionTotalPopulation)
+	fmt.Printf("the total population for western europe is: %f", totalPopulation)
 }
