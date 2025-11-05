@@ -6,6 +6,7 @@ import (
 
 	"github.com/alexduzi/database_sqlc/internal/db"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/google/uuid"
 )
 
 func main() {
@@ -54,4 +55,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	queries.CreateCourse(ctx, db.CreateCourseParams{
+		ID: uuid.New().String(),
+	})
 }
