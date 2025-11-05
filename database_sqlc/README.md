@@ -29,6 +29,15 @@ docker-compose up -d
 mysql -h 127.0.0.1 -P 3306 -u root -p
 ```
 
+- If you face some issues with the mysql root user, execute those following commands:
+```
+docker exec -it mysql /bin/bash
+mysql -u root
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
+FLUSH PRIVILEGES;
+exit;
+```
+
 - To execute the migrations, run:
 (up to create and down to clean up the resources)
 ```
