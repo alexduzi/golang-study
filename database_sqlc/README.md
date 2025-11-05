@@ -41,3 +41,28 @@ migrate -path=sql/migrations -database "mysql://root:root@tcp(localhost:3306)/co
 ```
 go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 ```
+
+- Create sqlc.yaml file at root level of your project:
+```
+version: "2"
+sql:
+  - schema: "sql/migrations"
+    queries: "sql/queries"
+    engine: "mysql"
+    gen:
+      go:
+        package: "db"
+        out: "internal/db"
+```
+- Inside db sql folder create queries folder and query.sql file
+- This query.sql file contains all operations by the entity
+- There is a sort of annotation, and each new query created
+- You need to run the command:
+```
+-- name: ListCategories :many
+-- name: GetCategory :one
+-- name: CreateCategory :exec
+
+sqlc generate
+```
+- This command will generate golang code in order to execute the query that you created in the query.sql file
