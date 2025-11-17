@@ -1,0 +1,6 @@
+{
+    "db": "postgress 5",
+    "host": "localhost 2",
+    "user": "root 5",
+    "password": "root3"
+}
